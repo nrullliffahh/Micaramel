@@ -4540,6 +4540,44 @@
           return result;
         }
 
+        async function uploadJournalPhoto(collection, entryId, photoIndex, photo) {
+          if (!photo.src.startsWith("data:image/")) return photo;
+          if (!journalSessionToken) {
+            throw new Error("Enter the secret code to upload photos.");
+          }
+
+          const blob = await (await fetch(photo.src)).blob();
+          const url = new URL(journalEndpoint);
+          url.searchParams.set("collection", collection);
+          url.searchParams.set("upload", "photo");
+          url.searchParams.set("entry_id", entryId);
+          url.searchParams.set("photo_index", String(photoIndex));
+          const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+              apikey: supabasePublishableKey,
+              Authorization: `Bearer ${journalSessionToken}`,
+              "Content-Type": blob.type,
+            },
+            body: blob,
+          });
+          let result;
+          try {
+            result = await response.json();
+          } catch (error) {
+            throw new Error("The photo storage service returned an invalid response.", { cause: error });
+          }
+          if (response.status === 401) {
+            journalSessionToken = null;
+            isUnlocked = false;
+            if (!dialog.open) openSecretDialog();
+          }
+          if (!response.ok || typeof result.src !== "string") {
+            throw new Error(result.message || "The photo could not be uploaded.");
+          }
+          return { ...photo, src: result.src };
+        }
+
         async function loadJournal(collection, applyEntries, showNotice) {
           if (loadedJournals.has(collection)) return;
           try {
@@ -4553,14 +4591,24 @@
         }
 
         async function saveJournal(collection, entries) {
-          const compressedEntries = await Promise.all(entries.map(async (entry) => ({
-            ...entry,
-            photos: await Promise.all(entry.photos.map(compressJournalPhoto)),
-          })));
+          const compressedEntries = [];
+          for (const entry of entries) {
+            const photos = [];
+            for (let photoIndex = 0; photoIndex < entry.photos.length; photoIndex += 1) {
+              const compressedPhoto = await compressJournalPhoto(entry.photos[photoIndex]);
+              photos.push(await uploadJournalPhoto(
+                collection,
+                entry.id,
+                photoIndex,
+                compressedPhoto,
+              ));
+            }
+            compressedEntries.push({ ...entry, photos });
+          }
           const encodedEntries = JSON.stringify(compressedEntries);
-          if (new TextEncoder().encode(encodedEntries).length > 3_500_000) {
+          if (new TextEncoder().encode(encodedEntries).length > 1_000_000) {
             throw new Error(
-              "This collection has reached its 3.5 MB storage limit. Remove a few photos to save these changes.",
+              "Journal details are too large to save. Remove some entries and try again.",
             );
           }
           await requestJournal(collection, compressedEntries);

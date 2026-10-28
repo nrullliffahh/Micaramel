@@ -9,6 +9,10 @@ returns a short-lived signed journal session. The `story-journal` Edge Function
 uses that session to read and save map pins, match highlights, and cafe dates.
 The signed session is held only in page memory, so refreshing the page requires
 entering the secret code again.
+Journal photos are uploaded individually to the `story-journal-photos` Storage
+bucket; journal rows keep only their photo URLs instead of embedding image data.
+The Edge Function accepts individual uploads up to 8 MB, subject to the
+project's Supabase Storage quota.
 The Next.js Supabase SSR helpers support Auth sessions for server-rendered
 routes; they are separate from this PIN-based journal session.
 
@@ -21,7 +25,7 @@ prefixed with `NEXT_PUBLIC_`.
 ## Deploy
 
 1. Create a Supabase project and install the Supabase CLI.
-2. From the project folder, link the project and apply both database migrations:
+2. From the project folder, link the project and apply the database migrations:
 
    ```sh
    supabase login
@@ -40,8 +44,9 @@ prefixed with `NEXT_PUBLIC_`.
    endpoints. `unlock-story` validates the code, uses the server-only
    service-role key, and limits each client to five failed attempts per
    15-minute window. `story-journal` accepts only short-lived tokens signed by
-   `unlock-story` and uses the service-role key server-side. The journal tables
-   have RLS enabled and do not grant direct browser access.
+   `unlock-story` and uses the service-role key server-side for journal and
+   photo access. The journal tables have RLS enabled and do not grant direct
+   browser access.
 
 4. `public/index.html` is configured to call the supplied project URL with its
    publishable key. Publishable keys are intended for browser use; never put
