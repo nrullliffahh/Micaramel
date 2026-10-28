@@ -96,8 +96,10 @@ function isValidEntry(collection: string, value: unknown): value is Record<strin
   if (collection === "map") {
     return typeof entry.place === "string" &&
       entry.place.length <= 160 &&
-      typeof entry.note === "string" &&
-      entry.note.length <= 2000 &&
+      (
+        typeof entry.note === "undefined" ||
+        (typeof entry.note === "string" && entry.note.length <= 2000)
+      ) &&
       Number.isInteger(entry.year) &&
       entry.year === Number(entry.date.slice(0, 4)) &&
       typeof entry.x === "number" &&

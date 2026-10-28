@@ -6,12 +6,12 @@ time capsule with 40 open-when letters.
 The soundtrack plays Deezer's 30-second song previews; full-song links open
 Spotify.
 Letters open through an animated collection grid, list drawer and reading sheet.
-The memory map includes year filters, tap-to-place pins with editable X/Y
-coordinates, photo polaroids, and an add/edit/delete sheet. Match highlights,
-cafe dates, and map memories are stored in Supabase after the journal migration
-and Edge Functions are deployed. The illustrated Peninsular Malaysia state
-boundaries are derived from geoBoundaries/OpenStreetMap ADM1 data and are
-credited in the map; the source data is licensed under ODbL 1.0.
+The memory map includes year filters, automatically positioned pins with
+tap-to-place positioning, photo polaroids, and an add/edit/delete sheet.
+Match highlights, cafe dates, and map memories are stored in Supabase after the
+journal migration and Edge Functions are deployed. The illustrated Peninsular
+Malaysia state boundaries are derived from geoBoundaries/OpenStreetMap ADM1 data
+and are credited in the map; the source data is licensed under ODbL 1.0.
 The matchday page includes an animated player profile, football diary cards,
 and a form for adding, editing, and deleting match highlights. Match entries
 and uploaded photos are stored in the shared Supabase journal after its

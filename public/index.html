@@ -3200,15 +3200,6 @@
         line-height: 1.15;
       }
 
-      .memory-note {
-        margin: 0;
-        color: #79645e;
-        font-family: var(--serif);
-        font-size: 0.83rem;
-        line-height: 1.55;
-        white-space: pre-line;
-      }
-
       .memory-actions {
         position: relative;
         display: flex;
@@ -3469,12 +3460,6 @@
         height: 100%;
         border-radius: 0.25rem;
         object-fit: cover;
-      }
-
-      .memory-coordinate-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.65rem;
       }
 
       .map-notice {
@@ -4135,7 +4120,7 @@
           <button class="map-add" id="map-add" type="button">
             <span>Add a new memory pin +</span><span aria-hidden="true">＋</span>
           </button>
-          <p class="map-description">Tap anywhere on the map to place a pin, or fine-tune its X/Y coordinates.</p>
+          <p class="map-description">New pins are placed automatically. Tap the map to choose a specific spot.</p>
           <div class="map-canvas" id="map-canvas" aria-label="Illustrated map of our memories">
             <svg class="map-landscape" viewBox="0 0 300 390" preserveAspectRatio="none" role="img" aria-labelledby="peninsula-map-description">
               <title id="peninsula-map-description">Illustrated map of Peninsular Malaysia.</title>
@@ -4173,7 +4158,6 @@
             <div class="polaroid-meta">
               <p class="memory-date" id="memory-date"></p>
               <h2 class="memory-title" id="memory-title"></h2>
-              <p class="memory-note" id="memory-note"></p>
               <div class="memory-actions">
                 <button class="memory-edit" id="memory-edit" type="button">Edit or delete</button>
                 <div class="memory-action-menu" id="memory-action-menu" hidden>
@@ -4207,9 +4191,6 @@
                   <option>2025</option><option>2026</option>
                 </select>
               </label>
-              <label class="memory-field">Note *
-                <textarea id="memory-note-input" name="note" maxlength="500" required></textarea>
-              </label>
               <div class="memory-field">Photos *
                 <div class="memory-photo-actions">
                   <button class="memory-photo-button" id="photo-create" type="button">Create New</button>
@@ -4219,14 +4200,6 @@
                 </div>
                 <div class="memory-photo-preview" id="memory-photo-preview"></div>
                 <div class="memory-existing-photos" id="memory-existing-photos" hidden></div>
-              </div>
-              <div class="memory-coordinate-grid">
-                <label class="memory-field">Map X *
-                  <input id="memory-x" name="x" type="number" min="0" max="100" step="0.1" value="50" required />
-                </label>
-                <label class="memory-field">Map Y *
-                  <input id="memory-y" name="y" type="number" min="0" max="100" step="0.1" value="50" required />
-                </label>
               </div>
             </div>
           </form>
@@ -5181,7 +5154,6 @@
         const memoryPhoto = document.getElementById("memory-photo");
         const memoryDate = document.getElementById("memory-date");
         const memoryTitle = document.getElementById("memory-title");
-        const memoryNote = document.getElementById("memory-note");
         const memoryId = document.getElementById("memory-id");
         const memoryEdit = document.getElementById("memory-edit");
         const memoryActionMenu = document.getElementById("memory-action-menu");
@@ -5197,9 +5169,6 @@
         const memoryPlaceInput = document.getElementById("memory-place");
         const memoryDateInput = document.getElementById("memory-date-input");
         const memoryYearInput = document.getElementById("memory-year");
-        const memoryNoteInput = document.getElementById("memory-note-input");
-        const memoryXInput = document.getElementById("memory-x");
-        const memoryYInput = document.getElementById("memory-y");
         const memoryPhotosInput = document.getElementById("memory-photos");
         const photoCreate = document.getElementById("photo-create");
         const photoExisting = document.getElementById("photo-existing");
@@ -5227,6 +5196,7 @@
         let activeMemoryId = null;
         let activePhotoIndex = 0;
         let editingMemoryId = null;
+        let editingMemoryPosition = null;
         let selectedMemoryPhotos = [];
         let mapNoticeTimeout = 0;
         let lastMapTrigger = null;
@@ -5316,7 +5286,6 @@
           lastMapTrigger = trigger;
           memoryDate.textContent = `${memory.date.slice(8, 10)} · ${memory.date.slice(5, 7)} · ${memory.date.slice(0, 4)}`;
           memoryTitle.textContent = memory.place;
-          memoryNote.textContent = memory.note;
           memoryIdLabel(memory);
           memoryActionMenu.hidden = true;
           renderMemoryPhoto();
@@ -5388,15 +5357,53 @@
           existingPhotos.hidden = false;
         }
 
+        function generateMemoryPosition() {
+          const preferredPositions = [
+            { x: 17, y: 15 },
+            { x: 24, y: 22 },
+            { x: 31, y: 29 },
+            { x: 38, y: 37 },
+            { x: 41, y: 45 },
+            { x: 40, y: 53 },
+            { x: 42, y: 60 },
+            { x: 47, y: 67 },
+            { x: 55, y: 70 },
+            { x: 61, y: 75 },
+            { x: 72, y: 79 },
+            { x: 82, y: 86 },
+          ];
+          const availablePosition = preferredPositions.find((position) =>
+            memories.every((memory) =>
+              Math.hypot(memory.x - position.x, memory.y - position.y) >= 7
+            )
+          );
+          if (availablePosition) return availablePosition;
+
+          for (let attempt = 0; attempt < 100; attempt += 1) {
+            const seed = memories.length + attempt;
+            const position = {
+              x: 20 + (seed * 37) % 65,
+              y: 15 + (seed * 23) % 75,
+            };
+            if (memories.every((memory) =>
+              Math.hypot(memory.x - position.x, memory.y - position.y) >= 7
+            )) {
+              return position;
+            }
+          }
+
+          return { x: 50, y: 50 };
+        }
+
         function openMemoryForm(memory = null, position = null) {
           editingMemoryId = memory?.id || null;
+          editingMemoryPosition = position || (memory
+            ? { x: memory.x, y: memory.y }
+            : generateMemoryPosition());
           memoryFormHeading.textContent = memory ? "Edit Memory Location" : "Creating new Memory Location";
           memoryPlaceInput.value = memory?.place || "";
           memoryDateInput.value = memory?.date || "";
           memoryYearInput.value = memory ? String(memory.year) : "";
-          memoryNoteInput.value = memory?.note || "";
-          memoryXInput.value = String(position?.x ?? memory?.x ?? 50);
-          memoryYInput.value = String(position?.y ?? memory?.y ?? 50);
           selectedMemoryPhotos = memory ? memory.photos.map((photo) => ({ ...photo })) : [];
           memoryPhotosInput.value = "";
           existingPhotos.hidden = true;
@@ -5567,9 +5574,9 @@
           }
           const date = memoryDateInput.value;
           const year = Number(memoryYearInput.value);
-          if (!memoryPlaceInput.value.trim() || !memoryNoteInput.value.trim()) {
-            showMapNotice("Please enter a place and a short memory note.");
-            (!memoryPlaceInput.value.trim() ? memoryPlaceInput : memoryNoteInput).focus();
+          if (!memoryPlaceInput.value.trim()) {
+            showMapNotice("Please enter a place for this memory.");
+            memoryPlaceInput.focus();
             return;
           }
           if (Number(date.slice(0, 4)) !== year) {
@@ -5581,9 +5588,8 @@
             place: memoryPlaceInput.value.trim(),
             date,
             year,
-            note: memoryNoteInput.value.trim(),
-            x: Number(memoryXInput.value),
-            y: Number(memoryYInput.value),
+            x: editingMemoryPosition.x,
+            y: editingMemoryPosition.y,
             photos: selectedMemoryPhotos.map((photo) => ({ ...photo })),
           };
           const nextMemories = editingMemoryId
