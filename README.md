@@ -25,17 +25,30 @@ categories, with staggered entrance animation and interactive memory-note cards.
 
 ## Run locally
 
-Serve this folder over HTTP instead of opening `index.html` directly:
+Run the Next.js app:
 
-```sh
-npx serve .
+```bash
+npm install
+npm run dev
 ```
+
+The existing anniversary experience is preserved as a public HTML asset at
+`public/index.html`; the Next.js home route opens it directly so its responsive
+layout and existing interactions remain unchanged.
+
+## Deploy to Vercel
+
+Import this repository into Vercel and add
+`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in the
+project's environment-variable settings. `.env.local` is for local development
+and is ignored by Git.
 
 ## Supabase secret-code setup
 
-The browser verifies the PIN through a Supabase Edge Function. Apply the
-database migration and deploy the function using the steps in
-[supabase/README.md](./supabase/README.md).
+The browser verifies the PIN through the Supabase Edge Function. The Supabase
+SSR helpers are available for authenticated Next.js routes; they do not replace
+the PIN function. Apply the database migration and deploy the function using
+the steps in [supabase/README.md](./supabase/README.md).
 
 Do not add Supabase service-role keys or other private credentials to this
 repository. The browser publishable key is intended for client-side use.

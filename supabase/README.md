@@ -3,8 +3,16 @@
 The secret code is stored as a bcrypt hash in Postgres. The browser only sends
 the four-digit code to the `unlock-story` Edge Function; the service-role key
 stays in Supabase and is never added to `index.html`.
-The existing page is static HTML, so it calls the Edge Function with `fetch`
-and does not need the Next.js Supabase SSR packages.
+The anniversary experience is still served as a standalone HTML asset from
+`public/index.html`, so its PIN form calls the Edge Function with `fetch`.
+The Next.js Supabase SSR helpers support Auth sessions for server-rendered
+routes; they are not involved in PIN verification.
+
+For local Next.js development, copy `.env.example` to `.env.local`. Set the
+same `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+variables in Vercel before deploying. Publishable keys are intended for
+browser use; never put the service-role key in the page or environment variables
+prefixed with `NEXT_PUBLIC_`.
 
 ## Deploy
 
