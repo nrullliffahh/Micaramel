@@ -7,6 +7,8 @@ The anniversary experience is served as a standalone HTML asset from
 `public/index.html`. The `unlock-story` Edge Function verifies the PIN and
 returns a short-lived signed journal session. The `story-journal` Edge Function
 uses that session to read and save map pins, match highlights, and cafe dates.
+The signed session is held only in page memory, so refreshing the page requires
+entering the secret code again.
 The Next.js Supabase SSR helpers support Auth sessions for server-rendered
 routes; they are separate from this PIN-based journal session.
 

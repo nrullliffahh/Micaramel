@@ -4521,7 +4521,8 @@
         const supabasePublishableKey =
           "sb_publishable_LeoyvRG-Y96CKqpAxRWo6g_Mv_volBX";
         const unlockEndpoint = `${supabaseUrl}/functions/v1/unlock-story`;
-        let isUnlocked = Boolean(sessionStorage.getItem("story_session_token"));
+        let journalSessionToken = null;
+        let isUnlocked = false;
         let pendingNavigation = null;
         const journalEndpoint = `${supabaseUrl}/functions/v1/story-journal`;
         const loadedJournals = new Set();
@@ -4532,8 +4533,9 @@
         let deezerCallbackId = 0;
 
         async function requestJournal(collection, entries) {
-          const token = sessionStorage.getItem("story_session_token");
-          if (!token) throw new Error("Enter the secret code to access saved memories.");
+          if (!journalSessionToken) {
+            throw new Error("Enter the secret code to access saved memories.");
+          }
 
           const response = await fetch(
             `${journalEndpoint}?collection=${encodeURIComponent(collection)}`,
@@ -4541,7 +4543,7 @@
               method: entries ? "PUT" : "GET",
               headers: {
                 apikey: supabasePublishableKey,
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${journalSessionToken}`,
                 ...(entries ? { "Content-Type": "application/json" } : {}),
               },
               ...(entries ? { body: JSON.stringify({ entries }) } : {}),
@@ -4555,7 +4557,7 @@
           }
 
           if (response.status === 401) {
-            sessionStorage.removeItem("story_session_token");
+            journalSessionToken = null;
             isUnlocked = false;
             if (!dialog.open) openSecretDialog();
           }
@@ -6619,7 +6621,7 @@
                   "The journal session is not ready yet. Please deploy the updated secret-code function.";
                 return;
               }
-              sessionStorage.setItem("story_session_token", result.token);
+              journalSessionToken = result.token;
               isUnlocked = true;
               dialog.classList.remove("has-error");
               secretForm.classList.add("is-leaving");

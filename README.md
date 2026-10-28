@@ -35,7 +35,8 @@ npm run dev
 The existing anniversary experience is preserved as a public HTML asset at
 `public/index.html`; the Next.js home route opens it directly so its responsive
 layout and existing interactions remain unchanged.
-Protected section navigation prompts for the secret code before opening a page.
+Protected section navigation prompts for the secret code before opening a page;
+the code must be entered again after every page refresh.
 This is a front-end navigation lock, not server-side content protection: the
 legacy page is still a public asset, so its embedded content can be inspected.
 Use server-side authorization before storing highly sensitive content there.
