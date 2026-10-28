@@ -41,6 +41,47 @@ async function hashClientKey(clientAddress: string, pepper: string) {
   ).join("");
 }
 
+function base64UrlEncode(bytes: Uint8Array) {
+  let binary = "";
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte);
+  });
+  return btoa(binary).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+}
+
+async function createSessionToken(secret: string) {
+  const now = Math.floor(Date.now() / 1000);
+  const header = base64UrlEncode(
+    new TextEncoder().encode(JSON.stringify({ alg: "HS256", typ: "JWT" })),
+  );
+  const payload = base64UrlEncode(
+    new TextEncoder().encode(
+      JSON.stringify({
+        scope: "story-journal",
+        iat: now,
+        exp: now + 60 * 60 * 12,
+      }),
+    ),
+  );
+  const unsignedToken = `${header}.${payload}`;
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = new Uint8Array(
+    await crypto.subtle.sign(
+      "HMAC",
+      key,
+      new TextEncoder().encode(unsignedToken),
+    ),
+  );
+
+  return `${unsignedToken}.${base64UrlEncode(signature)}`;
+}
+
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -130,5 +171,12 @@ Deno.serve(async (request) => {
   }
 
   const status = result.kind === "rate_limited" ? 429 : 200;
+  if (result.ok) {
+    return jsonResponse({
+      ...result,
+      token: await createSessionToken(serviceRoleKey),
+    }, status);
+  }
+
   return jsonResponse(result, status);
 });

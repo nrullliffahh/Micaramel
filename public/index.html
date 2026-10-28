@@ -2935,6 +2935,7 @@
         background-size: 36px 36px, 36px 36px, 9px 9px, 9px 9px;
         box-shadow: inset 0 0 35px rgb(118 92 64 / 8%);
         isolation: isolate;
+        cursor: crosshair;
       }
 
       .map-landscape {
@@ -2968,19 +2969,6 @@
 
       .map-state:nth-of-type(4n) {
         fill: #c5b99f;
-      }
-
-      .map-state-label {
-        fill: #4a0e17;
-        font-family: Georgia, var(--serif);
-        font-size: 6.2px;
-        font-weight: 600;
-        paint-order: stroke;
-        pointer-events: none;
-        stroke: #f2e8d8;
-        stroke-linejoin: round;
-        stroke-width: 1.6px;
-        text-anchor: middle;
       }
 
       .map-attribution {
@@ -4147,42 +4135,30 @@
           <button class="map-add" id="map-add" type="button">
             <span>Add a new memory pin +</span><span aria-hidden="true">＋</span>
           </button>
+          <p class="map-description">Tap anywhere on the map to place a pin, or fine-tune its X/Y coordinates.</p>
           <div class="map-canvas" id="map-canvas" aria-label="Illustrated map of our memories">
             <svg class="map-landscape" viewBox="0 0 300 390" preserveAspectRatio="none" role="img" aria-labelledby="peninsula-map-description">
-              <title id="peninsula-map-description">Map of Peninsular Malaysia showing Perlis, Kedah, Penang, Perak, Kelantan, Terengganu, Pahang, Selangor, Kuala Lumpur, Putrajaya, Negeri Sembilan, Melaka and Johor.</title>
+              <title id="peninsula-map-description">Illustrated map of Peninsular Malaysia.</title>
               <path class="map-state" data-state="Johor" d="M171.5 297.5L183.2 310.8L189.9 310.9L195.9 316.9L216.3 326.2L226.4 342.5L228.4 338.9L225.6 336.2L227.8 335.2L225.7 335.9L227.1 335L224.9 333.3L227.9 334.9L228.1 331.2L230.1 333.1L228.1 335L229.9 335.9L228.2 335.5L229 339L237.3 330.9L239.9 332.4L242.2 330L247.1 333.4L252.7 333.4L251.5 327.9L253.4 327.2L251.1 323.2L257 330.9L257.6 337L263.7 338.7L268.1 336.9L266.2 321.6L250.7 291.7L250.8 286.1L244.2 279.4L243.3 271.4L239.7 267.7L231.1 267L232.8 270.1L230.8 274.2L233.4 276.5L231.8 278.1L218 270.9L207.1 274.6L197.5 270.7L188.3 259.7L182.8 257.9L178.4 277.5L172.6 284.4L170.5 291.9L174.1 295.1L171.5 297.5Z"/>
-              <text class="map-state-label" x="236.8" y="309.1">Johor</text>
               <path class="map-state" data-state="Kuala Lumpur" d="M125.1 241.4L126.1 245.6L130.6 246.9L131.1 236.2L125.6 236.3L125.1 241.4Z"/>
-              <text class="map-state-label" x="105" y="241">K. Lumpur</text>
               <path class="map-state" data-state="Kedah" d="M18 63.3L18.3 66.7L22.1 67.5L22.8 72.7L32.8 68.6L28 60.9L29 62.7L23 64.6L18 63.3ZM91.2 98.6L92.6 91.4L95.8 91.6L97.9 88L98.1 80.9L94.4 79L98.1 76.3L97.3 73.1L89.6 71.4L83.4 74.2L81.1 62.8L77.9 62L77.2 59.1L72.5 62.8L57.5 57.3L57.1 62.3L47.9 73.2L56.2 88.1L57.5 104.5L55.3 105L55.6 109.4L65.8 110.8L67 133.1L64.1 133.1L65 135.6L67.7 136.5L76.9 123.9L82.7 121.9L89.7 105.5L88.6 99.5L91.2 98.6Z"/>
-              <text class="map-state-label" x="54.2" y="83.5">Kedah</text>
               <path class="map-state" data-state="Kelantan" d="M128.5 99.9L126.5 112.3L131.4 113.2L131.8 120.3L127.5 122.8L124.1 121.6L119.3 125.8L114.1 141.2L115.3 147.9L112.9 148.8L112.2 155.3L109.2 156.6L111.3 161L116 163.1L119.4 161.1L124.7 164.6L132.4 160.5L134.1 153L139.8 161.3L143.1 152.9L147.7 155.1L151.2 153L157 160.3L159.6 158.4L163.5 159.5L165.4 155.6L171.9 158.1L174.7 155.8L177.4 157.1L177.2 152.7L180.7 152.4L180.1 148.9L172.1 145.5L173.3 134.4L167.1 130.6L168.7 120.7L165.7 118.4L165.4 103.2L173.8 94.8L163.7 77.6L150 73.5L149.9 79.2L142 87.7L141.8 94.2L136.3 98.1L135.7 101.1L131.9 97.7L128.5 99.9Z"/>
-              <text class="map-state-label" x="141.9" y="126.5">Kelantan</text>
               <path class="map-state" data-state="Melaka" d="M177.1 280.7L165 276.4L160.2 278.1L154.7 276L143.5 281.9L153.4 291.2L171.5 297.5L174.1 295.1L170.5 291.9L172.8 283.7L177.1 280.7Z"/>
-              <text class="map-state-label" x="160.1" y="287.9">Melaka</text>
               <path class="map-state" data-state="Negeri Sembilan" d="M129.6 270.7L134.1 271.9L137.2 281.1L141.2 280L143.8 281.8L154.7 276L160.2 278.1L165 276.4L177.1 280.7L182.6 255.7L166.1 242.5L152.9 238.2L148.5 239.9L147.5 236.6L141.8 233.3L140.5 235L143.6 246.9L138.8 256L131.7 255.9L132.3 264.9L129.6 270.7Z"/>
-              <text class="map-state-label" x="148.6" y="262.5">N. Sembilan</text>
               <path class="map-state" data-state="Pahang" d="M140.5 235L143.7 234.1L148.5 239.9L152.9 238.2L166.1 242.5L182.2 255.2L182.7 257.9L188.3 259.7L197.5 270.7L207.1 274.6L218 270.9L231.8 278.1L233.4 276.5L230.8 274.2L232.8 270.1L230.8 267.5L233.2 267L222.2 252.5L221.8 229.2L224.6 220.6L216.5 209L219.3 204.6L218.8 199.3L222.7 196.8L219.7 188.8L222.7 183.8L216.4 183.6L217 196.5L215.3 198.4L212 192.8L207.9 192.4L204.5 188.9L194.1 188L195.2 178.7L199.7 175.8L200.2 172L197.6 168.6L191.1 167.8L190 165L192.2 161.3L190.1 157.8L184.1 157.3L178.8 152.3L177.4 157.1L174.7 155.8L171.9 158.1L165.4 155.6L162.9 159.8L155.6 159.7L151.2 153L147.7 155.1L143.1 152.9L139.8 161.3L134.1 153L132.4 160.5L124.7 164.6L119.4 161.1L116 163.1L111.3 161L112 167.6L109.3 171.4L114.7 173.9L115.5 182.5L118.4 183.6L118.3 187.7L122 190.3L123 205.9L131.2 210.5L135.2 216.1L132.1 228.8L140.5 235Z"/>
-              <text class="map-state-label" x="167" y="198.8">Pahang</text>
               <path class="map-state" data-state="Perlis" d="M57.4 57.7L53.8 54L55 50.8L53 48.4L47.4 48L47.3 55.8L45.8 55.4L43.9 63.9L47.7 72.9L57.1 62.3L57.4 57.7Z"/>
-              <text class="map-state-label" x="49.7" y="55.6">Perlis</text>
               <path class="map-state" data-state="Perak" d="M124.9 207.1L122 200.4L122 190.3L118.3 187.7L118.4 183.6L115.5 182.5L114.7 173.9L109.3 171.4L112 167.6L109.2 156.6L112.2 155.3L112.9 148.8L115.3 147.9L114.1 141.2L119.3 125.8L124.1 121.6L127.5 122.8L131.8 120.3L131.4 113.2L126.5 112.3L128.7 102.6L127 93.9L122.6 90.3L117.4 93.7L112.3 93.4L109.9 97.1L106.1 96.9L104.8 103L98.9 107.6L94.5 100.5L89 99L90.4 102.4L87.5 107L87.9 112.3L81.5 123.3L76.9 123.9L67.7 136.5L63.9 133.6L58.3 133.8L56.8 136L61.2 145.3L64.5 145.3L63.5 147.9L66.9 147.1L67.9 152.1L71.2 151.8L68.6 156.1L69.5 158.6L72.8 158.4L68.7 164.1L72.8 164.3L67.4 178.1L70.4 185.7L75.3 186.5L78.4 190.2L78.4 194.5L75.1 196.2L76.5 202.3L88.1 201.8L89.4 207.1L94.4 205.8L94.3 208.1L96.1 206.5L96.7 208.2L95.3 209.5L98.4 207.5L100.7 210.5L104.7 210L105.9 212.8L109.6 211.4L108.8 206.3L110.5 205.4L119.2 212.2L122.5 207.2L124.9 207.1Z"/>
-              <text class="map-state-label" x="95.2" y="154.7">Perak</text>
               <path class="map-state" data-state="Penang" d="M55.7 109.6L60.5 129.4L58.3 133.8L66.6 133.3L65.8 110.8L55.7 109.6ZM53.9 124L54.8 122.6L53.9 124ZM46.8 115.2L47.2 126.2L52.6 126.8L56 118L51.4 114.7L46.8 115.2Z"/>
-              <text class="map-state-label" x="55.5" y="120">Penang</text>
               <path class="map-state" data-state="Putrajaya" d="M127.9 255.3L130.7 252.7L129.4 249.8L126.9 250.8L127.9 255.3Z"/>
-              <text class="map-state-label" x="154" y="255">Putrajaya</text>
               <path class="map-state" data-state="Terengganu" d="M180.3 153.1L184.1 157.3L190.1 157.8L192.2 161.3L190 165L191.1 167.8L197.6 168.6L200.2 172L199.7 175.8L195.2 178.7L194.1 188L204.5 188.9L216.5 198L216.4 183.6L222.7 183.8L225.5 178L222.9 169.4L224.6 166.3L222.7 152.6L205.3 119.5L173.8 94.8L165.4 103.2L165.7 118.4L168.7 120.7L167.1 130.6L173.3 134.4L172.1 145.5L179.9 148.4L180.3 153.1Z"/>
-              <text class="map-state-label" x="194.5" y="132.8">Terengganu</text>
               <path class="map-state" data-state="Selangor" d="M87.5 201.9L81.5 203.1L81.2 206.4L93.3 215.4L101.6 230L107.4 235.1L108.4 242.8L112.4 249.1L107 257.6L113.3 259.4L117.1 265.7L129.6 270.7L132.3 264.9L131.7 255.9L138.8 256L143.6 246.9L141.6 235.2L132.1 228.8L135.2 216.1L131.2 210.5L124.9 207.1L122.5 207.2L119.2 212.2L110.5 205.4L108.8 206.3L109.6 211.4L105.9 212.8L104.7 210L100.7 210.5L98.4 207.5L95.3 209.5L96.7 208.2L96.1 206.5L94.3 208.1L94.4 205.8L89.4 207.1L87.5 201.9ZM125.1 241.4L125.6 236.3L131.1 236.2L130.6 246.9L126.1 245.6L125.1 241.4ZM127.9 255.3L126.9 250.8L129.4 249.8L130.7 252.7L127.9 255.3Z"/>
-              <text class="map-state-label" x="112.1" y="227.8">Selangor</text>
             </svg>
             <span class="map-canvas-label map-canvas-label--top">Our little world</span>
             <span class="map-canvas-label map-canvas-label--bottom">Est. 2022</span>
             <div class="map-pins" id="map-pins"></div>
             <p class="map-empty" id="map-empty" hidden>No memories saved for this year yet. Add a pin to mark a place.</p>
           </div>
-          <p class="map-attribution">State boundaries: <a href="https://www.geoboundaries.org/" target="_blank" rel="noreferrer">geoBoundaries</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> · <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noreferrer">ODbL 1.0</a></p>
+          <p class="map-attribution">Map data: <a href="https://www.geoboundaries.org/" target="_blank" rel="noreferrer">geoBoundaries</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> · <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noreferrer">ODbL 1.0</a></p>
         </div>
 
         <div class="map-overlay" id="memory-overlay" hidden>
@@ -4246,10 +4222,10 @@
               </div>
               <div class="memory-coordinate-grid">
                 <label class="memory-field">Map X *
-                  <input id="memory-x" name="x" type="number" min="0" max="100" value="50" required />
+                  <input id="memory-x" name="x" type="number" min="0" max="100" step="0.1" value="50" required />
                 </label>
                 <label class="memory-field">Map Y *
-                  <input id="memory-y" name="y" type="number" min="0" max="100" value="50" required />
+                  <input id="memory-y" name="y" type="number" min="0" max="100" step="0.1" value="50" required />
                 </label>
               </div>
             </div>
@@ -4545,13 +4521,70 @@
         const supabasePublishableKey =
           "sb_publishable_LeoyvRG-Y96CKqpAxRWo6g_Mv_volBX";
         const unlockEndpoint = `${supabaseUrl}/functions/v1/unlock-story`;
-        let isUnlocked = false;
+        let isUnlocked = Boolean(sessionStorage.getItem("story_session_token"));
         let pendingNavigation = null;
+        const journalEndpoint = `${supabaseUrl}/functions/v1/story-journal`;
+        const loadedJournals = new Set();
         let selectedTrackIndex = 0;
         let isPlaying = false;
         let ignorePauseEvent = false;
         let playbackRequest = 0;
         let deezerCallbackId = 0;
+
+        async function requestJournal(collection, entries) {
+          const token = sessionStorage.getItem("story_session_token");
+          if (!token) throw new Error("Enter the secret code to access saved memories.");
+
+          const response = await fetch(
+            `${journalEndpoint}?collection=${encodeURIComponent(collection)}`,
+            {
+              method: entries ? "PUT" : "GET",
+              headers: {
+                apikey: supabasePublishableKey,
+                Authorization: `Bearer ${token}`,
+                ...(entries ? { "Content-Type": "application/json" } : {}),
+              },
+              ...(entries ? { body: JSON.stringify({ entries }) } : {}),
+            },
+          );
+          let result;
+          try {
+            result = await response.json();
+          } catch (error) {
+            throw new Error("The journal service returned an invalid response.", { cause: error });
+          }
+
+          if (response.status === 401) {
+            sessionStorage.removeItem("story_session_token");
+            isUnlocked = false;
+            if (!dialog.open) openSecretDialog();
+          }
+          if (!response.ok) {
+            throw new Error(result.message || "The journal could not be saved.");
+          }
+          return result;
+        }
+
+        async function loadJournal(collection, applyEntries, showNotice) {
+          if (loadedJournals.has(collection)) return;
+          try {
+            const result = await requestJournal(collection);
+            if (result.initialized) applyEntries(result.entries);
+            loadedJournals.add(collection);
+          } catch (error) {
+            console.error(`Could not load ${collection} memories:`, error);
+            showNotice(error.message || "Saved memories could not be loaded.");
+          }
+        }
+
+        async function saveJournal(collection, entries) {
+          const encodedEntries = JSON.stringify(entries);
+          if (new TextEncoder().encode(encodedEntries).length > 3_500_000) {
+            throw new Error("These photos are too large to save. Choose fewer or smaller photos.");
+          }
+          await requestJournal(collection, entries);
+          loadedJournals.add(collection);
+        }
         const tracks = [
           {
             title: "Sempurna",
@@ -5353,15 +5386,15 @@
           existingPhotos.hidden = false;
         }
 
-        function openMemoryForm(memory = null) {
+        function openMemoryForm(memory = null, position = null) {
           editingMemoryId = memory?.id || null;
           memoryFormHeading.textContent = memory ? "Edit Memory Location" : "Creating new Memory Location";
           memoryPlaceInput.value = memory?.place || "";
           memoryDateInput.value = memory?.date || "";
           memoryYearInput.value = memory ? String(memory.year) : "";
           memoryNoteInput.value = memory?.note || "";
-          memoryXInput.value = String(memory?.x ?? 50);
-          memoryYInput.value = String(memory?.y ?? 50);
+          memoryXInput.value = String(position?.x ?? memory?.x ?? 50);
+          memoryYInput.value = String(position?.y ?? memory?.y ?? 50);
           selectedMemoryPhotos = memory ? memory.photos.map((photo) => ({ ...photo })) : [];
           memoryPhotosInput.value = "";
           existingPhotos.hidden = true;
@@ -5385,18 +5418,27 @@
           }
         }
 
-        function fileToDataUrl(file) {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.addEventListener("load", () => {
-              if (typeof reader.result === "string") resolve(reader.result);
-              else reject(new Error("The selected photo could not be read."));
-            }, { once: true });
-            reader.addEventListener("error", () => {
-              reject(reader.error || new Error("The selected photo could not be read."));
-            }, { once: true });
-            reader.readAsDataURL(file);
-          });
+        async function fileToDataUrl(file) {
+          if (file.size > 20_000_000) {
+            throw new Error("Please choose an image smaller than 20 MB.");
+          }
+
+          const bitmap = await createImageBitmap(file);
+          try {
+            const maxDimension = 1440;
+            const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+            canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+            const context = canvas.getContext("2d");
+            if (!context) throw new Error("This photo could not be prepared for saving.");
+            context.fillStyle = "#ffffff";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+            return canvas.toDataURL("image/jpeg", 0.78);
+          } finally {
+            bitmap.close();
+          }
         }
 
         renderMapYears();
@@ -5417,6 +5459,20 @@
           document.title = "Our Memory Map — Places That Hold Us";
           window.scrollTo(0, 0);
           mapBack.focus();
+          loadJournal("map", (entries) => {
+            memories = entries;
+            renderMap();
+          }, showMapNotice);
+        });
+        mapCanvas.addEventListener("click", (event) => {
+          if (event.target.closest(".map-pin")) return;
+          const bounds = mapCanvas.getBoundingClientRect();
+          const x = Math.round(((event.clientX - bounds.left) / bounds.width) * 1000) / 10;
+          const y = Math.round(((event.clientY - bounds.top) / bounds.height) * 1000) / 10;
+          openMemoryForm(null, {
+            x: Math.max(0, Math.min(100, x)),
+            y: Math.max(0, Math.min(100, y)),
+          });
         });
         mapBack.addEventListener("click", () => {
           returnToStory(mapNav);
@@ -5433,11 +5489,19 @@
           const memory = memories.find((item) => item.id === activeMemoryId);
           if (memory) openMemoryForm(memory);
         });
-        memoryDeleteAction.addEventListener("click", () => {
+        memoryDeleteAction.addEventListener("click", async () => {
           const memory = memories.find((item) => item.id === activeMemoryId);
           if (!memory) return;
           if (!window.confirm(`Delete the memory “${memory.place}”? This cannot be undone.`)) return;
-          memories = memories.filter((item) => item.id !== activeMemoryId);
+          const nextMemories = memories.filter((item) => item.id !== activeMemoryId);
+          try {
+            await saveJournal("map", nextMemories);
+          } catch (error) {
+            console.error("Could not delete the memory pin:", error);
+            showMapNotice(error.message || "Memory pin could not be saved.");
+            return;
+          }
+          memories = nextMemories;
           activeMemoryId = null;
           closeMemory();
           renderMap();
@@ -5492,7 +5556,7 @@
             showMapNotice("One of the selected photos could not be loaded.");
           }
         });
-        memoryForm.addEventListener("submit", (event) => {
+        memoryForm.addEventListener("submit", async (event) => {
           event.preventDefault();
           if (!memoryForm.reportValidity()) return;
           if (!selectedMemoryPhotos.length) {
@@ -5520,10 +5584,20 @@
             y: Number(memoryYInput.value),
             photos: selectedMemoryPhotos.map((photo) => ({ ...photo })),
           };
-          if (editingMemoryId) {
-            memories = memories.map((memory) => memory.id === editingMemoryId
+          const nextMemories = editingMemoryId
+            ? memories.map((memory) => memory.id === editingMemoryId
               ? { ...memory, ...memoryData }
-              : memory);
+              : memory)
+            : [{ id: `memory-${Date.now().toString(36)}`, ...memoryData }, ...memories];
+          try {
+            await saveJournal("map", nextMemories);
+          } catch (error) {
+            console.error("Could not save the memory pin:", error);
+            showMapNotice(error.message || "Memory pin could not be saved.");
+            return;
+          }
+          memories = nextMemories;
+          if (editingMemoryId) {
             activeMemoryId = editingMemoryId;
             selectedMapYear = year;
             renderMap();
@@ -5533,8 +5607,6 @@
             openMemory(activeMemoryId, updatedPin);
             showMapNotice("Memory updated.");
           } else {
-            const memoryIdValue = `memory-${Date.now().toString(36)}`;
-            memories.push({ id: memoryIdValue, ...memoryData });
             selectedMapYear = year;
             activeMemoryId = null;
             renderMap();
@@ -5669,9 +5741,17 @@
             card.querySelector(".match-edit-action").addEventListener("click", () => {
               openMatchForm(match);
             });
-            card.querySelector(".match-delete-action").addEventListener("click", () => {
+            card.querySelector(".match-delete-action").addEventListener("click", async () => {
               if (!window.confirm(`Delete the match highlight from ${formatMatchDate(match.date)}? This cannot be undone.`)) return;
-              matchItems = matchItems.filter((item) => item.id !== match.id);
+              const nextMatches = matchItems.filter((item) => item.id !== match.id);
+              try {
+                await saveJournal("match", nextMatches);
+              } catch (error) {
+                console.error("Could not delete the match highlight:", error);
+                showMatchNotice(error.message || "Match highlight could not be saved.");
+                return;
+              }
+              matchItems = nextMatches;
               renderMatchCards();
               showMatchNotice("Match highlight deleted.");
             });
@@ -5780,6 +5860,10 @@
           window.scrollTo(0, 0);
           renderMatchCards();
           matchBack.focus();
+          loadJournal("match", (entries) => {
+            matchItems = entries;
+            renderMatchCards();
+          }, showMatchNotice);
         });
         matchBack.addEventListener("click", () => returnToStory(matchNav));
         matchAdd.addEventListener("click", () => openMatchForm());
@@ -5809,7 +5893,7 @@
             showMatchNotice("A selected photo could not be loaded.");
           }
         });
-        matchForm.addEventListener("submit", (event) => {
+        matchForm.addEventListener("submit", async (event) => {
           event.preventDefault();
           if (!matchForm.reportValidity()) return;
           if (!selectedMatchPhotos.length) {
@@ -5820,19 +5904,22 @@
             date: matchDateInput.value,
             photos: selectedMatchPhotos.map((photo) => ({ ...photo })),
           };
-          if (editingMatchId) {
-            matchItems = matchItems.map((match) => match.id === editingMatchId
+          const nextMatches = editingMatchId
+            ? matchItems.map((match) => match.id === editingMatchId
               ? { ...match, ...matchData }
-              : match);
-            renderMatchCards();
-            closeMatchForm();
-            showMatchNotice("Match highlight updated.");
-          } else {
-            matchItems.unshift({ id: `match-${Date.now().toString(36)}`, ...matchData });
-            renderMatchCards();
-            closeMatchForm();
-            showMatchNotice("New match highlight added.");
+              : match)
+            : [{ id: `match-${Date.now().toString(36)}`, ...matchData }, ...matchItems];
+          try {
+            await saveJournal("match", nextMatches);
+          } catch (error) {
+            console.error("Could not save the match highlight:", error);
+            showMatchNotice(error.message || "Match highlight could not be saved.");
+            return;
           }
+          matchItems = nextMatches;
+          renderMatchCards();
+          closeMatchForm();
+          showMatchNotice(editingMatchId ? "Match highlight updated." : "New match highlight added.");
         });
         matchProfileOpen.addEventListener("click", () => {
           matchProfileTrigger = matchProfileOpen;
@@ -6026,9 +6113,17 @@
               toggle.setAttribute("aria-expanded", String(!menu.hidden));
             });
             card.querySelector(".cafe-edit-action").addEventListener("click", () => openCafeForm(cafe));
-            card.querySelector(".cafe-delete-action").addEventListener("click", () => {
+            card.querySelector(".cafe-delete-action").addEventListener("click", async () => {
               if (!window.confirm(`Delete “${cafe.name}” from the cafe diary? This cannot be undone.`)) return;
-              cafeItems = cafeItems.filter((item) => item.id !== cafe.id);
+              const nextCafes = cafeItems.filter((item) => item.id !== cafe.id);
+              try {
+                await saveJournal("cafe", nextCafes);
+              } catch (error) {
+                console.error("Could not delete the cafe date:", error);
+                showCafeNotice(error.message || "Cafe date could not be saved.");
+                return;
+              }
+              cafeItems = nextCafes;
               renderCafeCards();
               showCafeNotice("Cafe date deleted.");
             });
@@ -6156,6 +6251,10 @@
           window.scrollTo(0, 0);
           renderCafeCards();
           cafeBack.focus();
+          loadJournal("cafe", (entries) => {
+            cafeItems = entries;
+            renderCafeCards();
+          }, showCafeNotice);
         });
         cafeBack.addEventListener("click", () => returnToStory(cafeNav));
         cafeAdd.addEventListener("click", () => openCafeForm());
@@ -6185,7 +6284,7 @@
             showCafeNotice("A selected cafe photo could not be loaded.");
           }
         });
-        cafeForm.addEventListener("submit", (event) => {
+        cafeForm.addEventListener("submit", async (event) => {
           event.preventDefault();
           if (!cafeForm.reportValidity()) return;
           if (!cafeNameInput.value.trim() || !cafeNoteInput.value.trim()) {
@@ -6203,19 +6302,22 @@
             note: cafeNoteInput.value.trim(),
             photos: selectedCafePhotos.map((photo) => ({ ...photo })),
           };
-          if (editingCafeId) {
-            cafeItems = cafeItems.map((cafe) => cafe.id === editingCafeId
+          const nextCafes = editingCafeId
+            ? cafeItems.map((cafe) => cafe.id === editingCafeId
               ? { ...cafe, ...cafeData }
-              : cafe);
-            renderCafeCards();
-            closeCafeForm();
-            showCafeNotice("Cafe date updated.");
-          } else {
-            cafeItems.push({ id: `cafe-${Date.now().toString(36)}`, ...cafeData });
-            renderCafeCards();
-            closeCafeForm();
-            showCafeNotice("New cafe date added.");
+              : cafe)
+            : [...cafeItems, { id: `cafe-${Date.now().toString(36)}`, ...cafeData }];
+          try {
+            await saveJournal("cafe", nextCafes);
+          } catch (error) {
+            console.error("Could not save the cafe date:", error);
+            showCafeNotice(error.message || "Cafe date could not be saved.");
+            return;
           }
+          cafeItems = nextCafes;
+          renderCafeCards();
+          closeCafeForm();
+          showCafeNotice(editingCafeId ? "Cafe date updated." : "New cafe date added.");
         });
         cafeGalleryClose.addEventListener("click", closeCafeGallery);
         cafeGalleryOverlay.addEventListener("click", (event) => {
@@ -6512,6 +6614,12 @@
             const result = await response.json();
 
             if (response.ok && result.ok === true) {
+              if (typeof result.token !== "string") {
+                feedback.textContent =
+                  "The journal session is not ready yet. Please deploy the updated secret-code function.";
+                return;
+              }
+              sessionStorage.setItem("story_session_token", result.token);
               isUnlocked = true;
               dialog.classList.remove("has-error");
               secretForm.classList.add("is-leaving");

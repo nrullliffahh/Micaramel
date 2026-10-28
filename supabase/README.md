@@ -3,10 +3,12 @@
 The secret code is stored as a bcrypt hash in Postgres. The browser only sends
 the four-digit code to the `unlock-story` Edge Function; the service-role key
 stays in Supabase and is never added to `index.html`.
-The anniversary experience is still served as a standalone HTML asset from
-`public/index.html`, so its PIN form calls the Edge Function with `fetch`.
+The anniversary experience is served as a standalone HTML asset from
+`public/index.html`. The `unlock-story` Edge Function verifies the PIN and
+returns a short-lived signed journal session. The `story-journal` Edge Function
+uses that session to read and save map pins, match highlights, and cafe dates.
 The Next.js Supabase SSR helpers support Auth sessions for server-rendered
-routes; they are not involved in PIN verification.
+routes; they are separate from this PIN-based journal session.
 
 For local Next.js development, copy `.env.example` to `.env.local`. Set the
 same `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
@@ -17,7 +19,7 @@ prefixed with `NEXT_PUBLIC_`.
 ## Deploy
 
 1. Create a Supabase project and install the Supabase CLI.
-2. From the project folder, link the project and apply the database migration:
+2. From the project folder, link the project and apply both database migrations:
 
    ```sh
    supabase login
@@ -25,18 +27,21 @@ prefixed with `NEXT_PUBLIC_`.
    supabase db push
    ```
 
-3. Deploy the Edge Function:
+3. Deploy both Edge Functions after applying the migrations:
 
    ```sh
    supabase functions deploy unlock-story
+   supabase functions deploy story-journal
    ```
 
-   `supabase/config.toml` disables JWT verification for this public PIN
-   endpoint. The function itself validates the code, uses the server-only
+   `supabase/config.toml` disables Supabase JWT verification for these
+   endpoints. `unlock-story` validates the code, uses the server-only
    service-role key, and limits each client to five failed attempts per
-   15-minute window.
+   15-minute window. `story-journal` accepts only short-lived tokens signed by
+   `unlock-story` and uses the service-role key server-side. The journal tables
+   have RLS enabled and do not grant direct browser access.
 
-4. `index.html` is configured to call the supplied project URL with its
+4. `public/index.html` is configured to call the supplied project URL with its
    publishable key. Publishable keys are intended for browser use; never put
    the service-role key in the page.
 

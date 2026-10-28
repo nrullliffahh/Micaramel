@@ -1,2 +1,5 @@
 [functions.unlock-story]
 verify_jwt = false
+
+[functions.story-journal]
+verify_jwt = false

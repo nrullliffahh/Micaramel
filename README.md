@@ -6,20 +6,20 @@ time capsule with 40 open-when letters.
 The soundtrack plays Deezer's 30-second song previews; full-song links open
 Spotify.
 Letters open through an animated collection grid, list drawer and reading sheet.
-The memory map includes year filters, positioned pins, photo polaroids, and an
-add/edit/delete sheet. Memory changes and uploaded photos are kept in page state
-for the current visit. The illustrated Peninsular Malaysia state boundaries are
-derived from geoBoundaries/OpenStreetMap ADM1 data and are credited in the map;
-the source data is licensed under ODbL 1.0.
+The memory map includes year filters, tap-to-place pins with editable X/Y
+coordinates, photo polaroids, and an add/edit/delete sheet. Match highlights,
+cafe dates, and map memories are stored in Supabase after the journal migration
+and Edge Functions are deployed. The illustrated Peninsular Malaysia state
+boundaries are derived from geoBoundaries/OpenStreetMap ADM1 data and are
+credited in the map; the source data is licensed under ODbL 1.0.
 The matchday page includes an animated player profile, football diary cards,
 and a form for adding, editing, and deleting match highlights. Match entries
-and uploaded photos are kept in page state for the current visit. It follows
-this project's existing standalone HTML/CSS/JavaScript setup; the sample
-football match cards can be replaced with personal match photos. The profile
-uses the provided local portrait in `mica-football.jpg`.
+and uploaded photos are stored in the shared Supabase journal after its
+migrations and Edge Functions are deployed. The profile uses the provided
+local portrait in `mica-football.jpg`.
 The cafe diary includes six sample dates, photo galleries, and a form for
-adding, editing, and deleting cafe memories. Cafe entries and uploaded photos
-are kept in page state for the current visit.
+adding, editing, and deleting cafe memories; these are stored in the same
+shared Supabase journal.
 The periodic table page presents 16 relationship elements across four
 categories, with staggered entrance animation and interactive memory-note cards.
 
