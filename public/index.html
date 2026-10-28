@@ -4560,7 +4560,7 @@
           const encodedEntries = JSON.stringify(compressedEntries);
           if (new TextEncoder().encode(encodedEntries).length > 3_500_000) {
             throw new Error(
-              "The photos in this collection are still too large to save. Remove a few photos or choose smaller images.",
+              "This collection has reached its 3.5 MB storage limit. Remove a few photos to save these changes.",
             );
           }
           await requestJournal(collection, compressedEntries);
@@ -5434,7 +5434,7 @@
           }
         }
 
-        const maxJournalPhotoBytes = 220 * 1024;
+        const maxJournalPhotoBytes = 120 * 1024;
 
         function dataUrlBytes(dataUrl) {
           const base64Start = dataUrl.indexOf(",") + 1;
@@ -5442,8 +5442,8 @@
         }
 
         async function compressBitmap(bitmap) {
-          const maxDimensions = [1280, 960, 720, 540];
-          const qualities = [0.68, 0.56, 0.44];
+          const maxDimensions = [1280, 960, 720, 540, 420, 320];
+          const qualities = [0.68, 0.56, 0.44, 0.34, 0.26];
           let smallestDataUrl = "";
 
           for (const maxDimension of maxDimensions) {
