@@ -4551,6 +4551,7 @@
         let isPlaying = false;
         let ignorePauseEvent = false;
         let playbackRequest = 0;
+        let deezerCallbackId = 0;
         const tracks = [
           {
             title: "Sempurna",
@@ -4802,6 +4803,20 @@
             playButton.addEventListener("click", () => {
               selectTrack(index);
             });
+            playButton.addEventListener("pointerenter", () => {
+              if (track.deezerId) {
+                getDeezerPreview(track).catch((error) => {
+                  console.warn(`Could not preload preview for ${track.title}:`, error);
+                });
+              }
+            }, { once: true });
+            playButton.addEventListener("focus", () => {
+              if (track.deezerId) {
+                getDeezerPreview(track).catch((error) => {
+                  console.warn(`Could not preload preview for ${track.title}:`, error);
+                });
+              }
+            }, { once: true });
 
             row.append(number, cover, copy, playButton);
             trackList.append(row);
@@ -4812,6 +4827,85 @@
           return track.spotifyId
             ? `https://open.spotify.com/track/${track.spotifyId}`
             : `https://open.spotify.com/search/${encodeURIComponent(`${track.artist} ${track.title}`)}`;
+        }
+
+        async function getDeezerPreview(track) {
+          if (track.previewUrl) return track.previewUrl;
+          if (track.previewPromise) return track.previewPromise;
+
+          const callbackName = `__micaramelDeezer${++deezerCallbackId}`;
+          track.previewPromise = new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            let timeoutId;
+            const cleanup = () => {
+              window.clearTimeout(timeoutId);
+              script.remove();
+              delete window[callbackName];
+            };
+
+            window[callbackName] = (result) => {
+              const previewUrl = result?.preview;
+              if (typeof previewUrl !== "string") {
+                cleanup();
+                reject(new Error("No preview is available for this track."));
+                return;
+              }
+
+              let preview;
+              try {
+                preview = new URL(previewUrl);
+              } catch (error) {
+                cleanup();
+                reject(new Error("Deezer returned an invalid preview URL.", { cause: error }));
+                return;
+              }
+
+              if (
+                preview.protocol !== "https:" ||
+                !preview.hostname.endsWith(".dzcdn.net")
+              ) {
+                cleanup();
+                reject(new Error("Deezer returned an untrusted preview URL."));
+                return;
+              }
+
+              cleanup();
+              track.previewUrl = preview.href;
+              resolve(track.previewUrl);
+            };
+
+            script.async = true;
+            script.onerror = () => {
+              cleanup();
+              reject(new Error("Could not load the Deezer preview."));
+            };
+            script.src =
+              `https://api.deezer.com/track/${encodeURIComponent(track.deezerId)}` +
+              `?output=jsonp&callback=${callbackName}`;
+            timeoutId = window.setTimeout(() => {
+              cleanup();
+              reject(new Error("Timed out while loading the Deezer preview."));
+            }, 12000);
+            document.head.append(script);
+          });
+
+          try {
+            return await track.previewPromise;
+          } catch (error) {
+            track.previewPromise = null;
+            throw error;
+          }
+        }
+
+        function preloadTrackPreviews() {
+          tracks.forEach((track, index) => {
+            if (!track.deezerId || track.previewUrl) return;
+            window.setTimeout(() => {
+              getDeezerPreview(track).catch((error) => {
+                console.warn(`Could not preload preview for ${track.title}:`, error);
+              });
+            }, index * 250);
+          });
         }
 
         function updatePlayerDisplay(renderList = true) {
@@ -4854,13 +4948,23 @@
           }
 
           try {
-            audioPlayer.src = track.previewUrl ||
-              `/api/deezer-preview?id=${encodeURIComponent(track.deezerId)}`;
-            await audioPlayer.play();
+            if (!track.previewUrl) {
+              await getDeezerPreview(track);
+              if (request !== playbackRequest) return;
+              playerState.textContent = "Preview ready — tap play to start.";
+              updatePlayerDisplay();
+              return;
+            }
+
+            audioPlayer.src = track.previewUrl;
+            const playRequest = audioPlayer.play();
+            await playRequest;
           } catch (error) {
             if (request !== playbackRequest) return;
             console.error("Could not play the song preview:", error);
-            playerState.textContent = "Preview unavailable. Listen on Spotify.";
+            playerState.textContent = error?.name === "NotAllowedError" && track.previewUrl
+              ? "Preview ready — tap play to start."
+              : "Preview unavailable. Listen on Spotify.";
             isPlaying = false;
             updatePlayerDisplay();
           }
@@ -4996,6 +5100,7 @@
           tablePage.hidden = true;
           soundtrackPage.hidden = false;
           storyScreen.hidden = true;
+          preloadTrackPreviews();
           document.title = "Our Soundtrack — Four Years of Us";
           window.scrollTo(0, 0);
         }
@@ -6258,6 +6363,7 @@
 
         renderMatchCards();
         renderTrackList();
+        preloadTrackPreviews();
         updatePlayerDisplay();
         lettersNav.addEventListener("click", (event) => {
           event.preventDefault();

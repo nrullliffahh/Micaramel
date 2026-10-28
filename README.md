@@ -3,8 +3,8 @@
 A mobile-first anniversary page with a live relationship counter and a
 four-digit secret-code screen that opens a soundtrack page and a four-collection
 time capsule with 40 open-when letters.
-The soundtrack plays Deezer's 30-second song previews through a same-origin
-Next.js route; full-song links open Spotify.
+The soundtrack plays Deezer's 30-second song previews; full-song links open
+Spotify.
 Letters open through an animated collection grid, list drawer and reading sheet.
 The memory map includes year filters, positioned pins, photo polaroids, and an
 add/edit/delete sheet. Memory changes and uploaded photos are kept in page state
