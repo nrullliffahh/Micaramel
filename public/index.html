@@ -3925,27 +3925,28 @@
         }
 
         .nav-links a {
-          font-size: clamp(0.39rem, 1.65vw, 0.53rem);
-          letter-spacing: 0.12em;
+          font-size: clamp(0.43rem, 1.8vw, 0.53rem);
+          letter-spacing: 0.08em;
         }
 
         .hero-copy {
           width: calc(100% - 2rem);
+          top: 46%;
         }
 
         h1 {
-          font-size: clamp(2.25rem, 12vw, 4.8rem);
+          font-size: clamp(2.2rem, 11vw, 4.4rem);
         }
 
         .counter-card {
           right: 0.5rem;
           bottom: max(0.35rem, env(safe-area-inset-bottom));
           left: 0.5rem;
-          padding: 1.75rem 0.75rem 2.25rem;
+          padding: 1.3rem 0.75rem 1.6rem;
         }
 
         .together-label {
-          margin-bottom: 2rem;
+          margin-bottom: 1.25rem;
         }
 
         .time-unit {
@@ -4545,6 +4546,7 @@
           "sb_publishable_LeoyvRG-Y96CKqpAxRWo6g_Mv_volBX";
         const unlockEndpoint = `${supabaseUrl}/functions/v1/unlock-story`;
         let isUnlocked = false;
+        let pendingNavigation = null;
         let selectedTrackIndex = 0;
         let isPlaying = false;
         let ignorePauseEvent = false;
@@ -4852,24 +4854,8 @@
           }
 
           try {
-            let previewUrl = track.previewUrl;
-            if (!previewUrl) {
-              const response = await fetch(
-                `https://api.deezer.com/track/${track.deezerId}`,
-              );
-              if (!response.ok) {
-                throw new Error(`Preview lookup failed with status ${response.status}.`);
-              }
-
-              const result = await response.json();
-              previewUrl = result.preview;
-            }
-            if (request !== playbackRequest) return;
-            if (!previewUrl) {
-              throw new Error("No audio preview is available for this track.");
-            }
-
-            audioPlayer.src = previewUrl;
+            audioPlayer.src = track.previewUrl ||
+              `/api/deezer-preview?id=${encodeURIComponent(track.deezerId)}`;
             await audioPlayer.play();
           } catch (error) {
             if (request !== playbackRequest) return;
@@ -5026,6 +5012,22 @@
           window.scrollTo(0, 0);
           dialog.showModal();
           successTitle.focus();
+        }
+
+        function openSecretDialog() {
+          dialog.classList.remove("has-error");
+          soundtrackButton.textContent = pendingNavigation
+            ? `Continue to ${pendingNavigation.textContent.trim().toLowerCase()}`
+            : "Enter Our Soundtrack";
+          secretForm.hidden = false;
+          secretForm.classList.remove("is-leaving");
+          successScreen.hidden = true;
+          dialog.setAttribute("aria-labelledby", "secret-title");
+          dialog.setAttribute("aria-describedby", "secret-description");
+          feedback.textContent = "";
+          codeInput.value = "";
+          if (!dialog.open) dialog.showModal();
+          codeInput.focus();
         }
 
         const mapBack = document.getElementById("map-back");
@@ -6311,6 +6313,16 @@
         });
         soundtrackBack.addEventListener("click", showStory);
 
+        [soundtrackNav, lettersNav, mapNav, matchNav, cafeNav, tableNav].forEach((link) => {
+          link.addEventListener("click", (event) => {
+            if (isUnlocked) return;
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            pendingNavigation = link;
+            openSecretDialog();
+          }, true);
+        });
+
         exploreButton.addEventListener("click", (event) => {
           event.preventDefault();
           dialog.classList.remove("has-error");
@@ -6335,8 +6347,14 @@
 
         closeButton.addEventListener("click", () => dialog.close());
         soundtrackButton.addEventListener("click", () => {
+          const destination = pendingNavigation;
+          pendingNavigation = null;
           dialog.close();
-          showSoundtrack();
+          if (destination) {
+            destination.click();
+          } else {
+            showSoundtrack();
+          }
         });
         dialog.addEventListener("cancel", (event) => {
           event.preventDefault();
@@ -6347,7 +6365,11 @@
           if (event.target === dialog) dialog.close();
         });
 
-        dialog.addEventListener("close", () => exploreButton.focus());
+        dialog.addEventListener("close", () => {
+          pendingNavigation = null;
+          soundtrackButton.textContent = "Enter Our Soundtrack";
+          exploreButton.focus();
+        });
 
         codeInput.addEventListener("input", () => {
           codeInput.value = codeInput.value.replace(/\D/g, "").slice(0, 4);

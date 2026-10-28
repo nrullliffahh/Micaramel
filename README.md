@@ -3,8 +3,8 @@
 A mobile-first anniversary page with a live relationship counter and a
 four-digit secret-code screen that opens a soundtrack page and a four-collection
 time capsule with 40 open-when letters.
-The soundtrack plays 30-second song previews in the page; full-song links open
-Spotify.
+The soundtrack plays Deezer's 30-second song previews through a same-origin
+Next.js route; full-song links open Spotify.
 Letters open through an animated collection grid, list drawer and reading sheet.
 The memory map includes year filters, positioned pins, photo polaroids, and an
 add/edit/delete sheet. Memory changes and uploaded photos are kept in page state
@@ -35,6 +35,10 @@ npm run dev
 The existing anniversary experience is preserved as a public HTML asset at
 `public/index.html`; the Next.js home route opens it directly so its responsive
 layout and existing interactions remain unchanged.
+Protected section navigation prompts for the secret code before opening a page.
+This is a front-end navigation lock, not server-side content protection: the
+legacy page is still a public asset, so its embedded content can be inspected.
+Use server-side authorization before storing highly sensitive content there.
 
 ## Deploy to Vercel
 
