@@ -12,6 +12,7 @@ Match highlights, cafe dates, and map memories are stored in Supabase after the
 journal migration and Edge Functions are deployed. The illustrated Peninsular
 Malaysia state boundaries are derived from geoBoundaries/OpenStreetMap ADM1 data
 and are credited in the map; the source data is licensed under ODbL 1.0.
+Uploaded photos are resized and compressed before saving to the shared journal.
 The matchday page includes an animated player profile, football diary cards,
 and a form for adding, editing, and deleting match highlights. Match entries
 and uploaded photos are stored in the shared Supabase journal after its

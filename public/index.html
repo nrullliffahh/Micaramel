@@ -4553,11 +4553,18 @@
         }
 
         async function saveJournal(collection, entries) {
-          const encodedEntries = JSON.stringify(entries);
+          const compressedEntries = await Promise.all(entries.map(async (entry) => ({
+            ...entry,
+            photos: await Promise.all(entry.photos.map(compressJournalPhoto)),
+          })));
+          const encodedEntries = JSON.stringify(compressedEntries);
           if (new TextEncoder().encode(encodedEntries).length > 3_500_000) {
-            throw new Error("These photos are too large to save. Choose fewer or smaller photos.");
+            throw new Error(
+              "The photos in this collection are still too large to save. Remove a few photos or choose smaller images.",
+            );
           }
-          await requestJournal(collection, entries);
+          await requestJournal(collection, compressedEntries);
+          entries.splice(0, entries.length, ...compressedEntries);
           loadedJournals.add(collection);
         }
         const tracks = [
@@ -5427,14 +5434,19 @@
           }
         }
 
-        async function fileToDataUrl(file) {
-          if (file.size > 20_000_000) {
-            throw new Error("Please choose an image smaller than 20 MB.");
-          }
+        const maxJournalPhotoBytes = 220 * 1024;
 
-          const bitmap = await createImageBitmap(file);
-          try {
-            const maxDimension = 1440;
+        function dataUrlBytes(dataUrl) {
+          const base64Start = dataUrl.indexOf(",") + 1;
+          return Math.floor((dataUrl.length - base64Start) * 3 / 4);
+        }
+
+        async function compressBitmap(bitmap) {
+          const maxDimensions = [1280, 960, 720, 540];
+          const qualities = [0.68, 0.56, 0.44];
+          let smallestDataUrl = "";
+
+          for (const maxDimension of maxDimensions) {
             const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
             const canvas = document.createElement("canvas");
             canvas.width = Math.max(1, Math.round(bitmap.width * scale));
@@ -5444,9 +5456,50 @@
             context.fillStyle = "#ffffff";
             context.fillRect(0, 0, canvas.width, canvas.height);
             context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-            return canvas.toDataURL("image/jpeg", 0.78);
+
+            for (const quality of qualities) {
+              const dataUrl = canvas.toDataURL("image/jpeg", quality);
+              smallestDataUrl = dataUrl;
+              if (dataUrlBytes(dataUrl) <= maxJournalPhotoBytes) return dataUrl;
+            }
+          }
+
+          return smallestDataUrl;
+        }
+
+        async function fileToDataUrl(file) {
+          if (file.size > 20_000_000) {
+            throw new Error("Please choose an image smaller than 20 MB.");
+          }
+
+          const bitmap = await createImageBitmap(file);
+          try {
+            return await compressBitmap(bitmap);
           } finally {
             bitmap.close();
+          }
+        }
+
+        async function compressJournalPhoto(photo) {
+          if (
+            typeof photo.src !== "string" ||
+            !photo.src.startsWith("data:image/") ||
+            dataUrlBytes(photo.src) <= maxJournalPhotoBytes
+          ) {
+            return photo;
+          }
+
+          let bitmap;
+          try {
+            const response = await fetch(photo.src);
+            bitmap = await createImageBitmap(await response.blob());
+            return { ...photo, src: await compressBitmap(bitmap) };
+          } catch (error) {
+            throw new Error("A saved photo could not be compressed. Remove it and upload it again.", {
+              cause: error,
+            });
+          } finally {
+            bitmap?.close();
           }
         }
 
