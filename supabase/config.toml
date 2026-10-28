@@ -1,0 +1,2 @@
+[functions.unlock-story]
+verify_jwt = false
